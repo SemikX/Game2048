@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace Game2048
     {
         private const int Width = 4;
         private const int Height = 4;
-        private const int WinNumber = 2048;
+        private const int VictoryNumber = 2048;
         private readonly Random random = new Random();
 
         public event EventHandler Victory = delegate { };
@@ -18,7 +18,7 @@ namespace Game2048
         private int bestScore;
         private int score;
 
-        private bool isWinNumberReached;
+        private bool isVictoryNumberReached;
         private bool noLegalMove;
 
         private readonly Dictionary<int, ConsoleColor> numberColors = new()
@@ -46,7 +46,7 @@ namespace Game2048
             this.gameCells = new int[Width, Height];
             this.score = 0;
             this.noLegalMove = false;
-            this.isWinNumberReached = false;
+            this.isVictoryNumberReached = false;
 
             const int startingTwos = 2;
 
@@ -88,7 +88,7 @@ namespace Game2048
             Console.WriteLine($"Score: {this.score}");
             Console.WriteLine($"Best score: {this.bestScore}");
 
-            if (this.isWinNumberReached)
+            if (this.isVictoryNumberReached)
                 Console.WriteLine($"You win!");
 
             if (this.noLegalMove)
@@ -104,17 +104,17 @@ namespace Game2048
         {
             bool isMovementHappened = false;
 
-            var xs = offsetX < 1
+            var cellProcessingOrderXs = offsetX < 1
                 ? Enumerable.Range(0, Width)
                 : Enumerable.Range(0, Width).Reverse();
 
-            var ys = offsetY < 1
+            var cellProcessingOrderYs = offsetY < 1
                 ? Enumerable.Range(0, Height)
                 : Enumerable.Range(0, Height).Reverse();
 
-            foreach (int accumulatorCellX in xs)
+            foreach (int accumulatorCellX in cellProcessingOrderXs)
             {
-                foreach (int accumulatorCellY in ys)
+                foreach (int accumulatorCellY in cellProcessingOrderYs)
                 {
                     int dimensionInDirection = offsetX != 0
                         ? Width
@@ -153,8 +153,8 @@ namespace Game2048
                             if (this.score > this.bestScore)
                                 this.bestScore = this.score;
 
-                            if (finalNumber >= WinNumber)
-                                this.isWinNumberReached = true;
+                            if (finalNumber >= VictoryNumber)
+                                this.isVictoryNumberReached = true;
 
                             isMovementHappened = true;
                         }
@@ -164,7 +164,7 @@ namespace Game2048
                 }
             }
 
-            if (this.isWinNumberReached)
+            if (this.isVictoryNumberReached)
             {
                 this.Victory(this, EventArgs.Empty);
                 return;
