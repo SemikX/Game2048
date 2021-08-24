@@ -218,26 +218,44 @@ namespace Game2048
 
         private void GenerateNumberInFreeCell()
         {
-            var zeroCells = new List<(int y, int x)>();
+            if (this.TryFindFreeCell(out int freeCellX, out int freeCellY))
+            {
+                // 10% chance to drop 4 instead of 2
+                const double chanceToDrop4 = 0.1;
 
-            for (int y = 0; y < Height; y++)
-                for (int x = 0; x < Width; x++)
-                    if (this.gameCells[y, x] == 0)
-                        zeroCells.Add((y, x));
+                int number = this.random.NextDouble() < chanceToDrop4
+                    ? 4
+                    : 2;
 
-            if (zeroCells.Count == 0)
-                return;
+                this.gameCells[freeCellY, freeCellX] = number;
+            }
+        }
 
-            (int Y, int X) randomZeroCell = zeroCells[this.random.Next(0, zeroCells.Count)];
+        private bool TryFindFreeCell(out int freeCellX, out int freeCellY)
+        {
+            int yRnd = this.random.Next(0, Height);
+            int xRnd = this.random.Next(0, Width);
 
-            // 10% chance to drop 4 instead of 2
-            const double chanceToDrop4 = 0.1;
+            for (int y = 0; y < Height; ++y)
+            {
+                int checkY = (yRnd + y) % Height;
 
-            int number = this.random.NextDouble() < chanceToDrop4
-                ? 4
-                : 2;
+                for (int x = 0; x < Width; ++x)
+                {
+                    int checkX = (xRnd + x) % Width;
 
-            this.gameCells[randomZeroCell.Y, randomZeroCell.X] = number;
+                    if (this.gameCells[checkY, checkX] == 0)
+                    {
+                        freeCellX = checkX;
+                        freeCellY = checkY;
+                        return true;
+                    }
+                }
+            }
+
+            freeCellX = 0;
+            freeCellY = 0;
+            return false;
         }
     }
 }
