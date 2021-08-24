@@ -14,6 +14,7 @@ namespace Game2048
         public event EventHandler Victory = delegate { };
         public event EventHandler Defeat  = delegate { };
 
+        // [y, x]
         private int[,] gameCells;
         private int bestScore;
         private int score;
@@ -43,7 +44,7 @@ namespace Game2048
 
         public void Restart()
         {
-            this.gameCells = new int[Width, Height];
+            this.gameCells = new int[Height, Width];
             this.score = 0;
             this.noLegalMove = false;
             this.isVictoryNumberReached = false;
@@ -66,7 +67,7 @@ namespace Game2048
                 {
                     Console.Write("|");
 
-                    int cellNumber = this.gameCells[x, y];
+                    int cellNumber = this.gameCells[y, x];
 
                     string numberString = cellNumber != 0
                         ? cellNumber.ToString()
@@ -128,16 +129,16 @@ namespace Game2048
                         if (this.IsCellOutOfBounds(movingCellX, movingCellY))
                             continue;
 
-                        int accumulatorCellNumber = this.gameCells[accumulatorCellX, accumulatorCellY];
-                        int movingCellNumber      = this.gameCells[movingCellX, movingCellY];
+                        int accumulatorCellNumber = this.gameCells[accumulatorCellY, accumulatorCellX];
+                        int movingCellNumber      = this.gameCells[movingCellY, movingCellX];
 
                         if (movingCellNumber == 0)
                             continue;
 
                         if (accumulatorCellNumber == 0)
                         {
-                            this.gameCells[accumulatorCellX, accumulatorCellY] = movingCellNumber;
-                            this.gameCells[movingCellX, movingCellY] = 0;
+                            this.gameCells[accumulatorCellY, accumulatorCellX] = movingCellNumber;
+                            this.gameCells[movingCellY, movingCellX] = 0;
                             isMovementHappened = true;
                             continue;
                         }
@@ -146,8 +147,8 @@ namespace Game2048
                         {
                             int finalNumber = accumulatorCellNumber + movingCellNumber;
 
-                            this.gameCells[accumulatorCellX, accumulatorCellY] = finalNumber;
-                            this.gameCells[movingCellX, movingCellY] = 0;
+                            this.gameCells[accumulatorCellY, accumulatorCellX] = finalNumber;
+                            this.gameCells[movingCellY, movingCellX] = 0;
 
                             this.score += finalNumber;
                             if (this.score > this.bestScore)
@@ -193,20 +194,20 @@ namespace Game2048
             for (int x = 0; x < Width; x++)
                 for (int y = 0; y < Height; y++)
                 {
-                    int currentCellNumber = this.gameCells[x, y];
+                    int currentCellNumber = this.gameCells[y, x];
                     if (currentCellNumber == 0)
                         return true;
 
                     if (!this.IsCellOutOfBounds(x + 1, y))
                     {
-                        int rightCellNumber = this.gameCells[x + 1, y];
+                        int rightCellNumber = this.gameCells[y, x + 1];
                         if (currentCellNumber == rightCellNumber)
                             return true;
                     }
 
                     if (!this.IsCellOutOfBounds(x, y + 1))
                     {
-                        int bottomCellNumber = this.gameCells[x, y + 1];
+                        int bottomCellNumber = this.gameCells[y + 1, x];
                         if (currentCellNumber == bottomCellNumber)
                             return true;
                     }
@@ -217,17 +218,17 @@ namespace Game2048
 
         private void GenerateNumberInFreeCell()
         {
-            var zeroCells = new List<(int x, int y)>();
+            var zeroCells = new List<(int y, int x)>();
 
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
-                    if (this.gameCells[x, y] == 0)
-                        zeroCells.Add((x, y));
+            for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
+                    if (this.gameCells[y, x] == 0)
+                        zeroCells.Add((y, x));
 
             if (zeroCells.Count == 0)
                 return;
 
-            (int X, int Y) randomZeroCell = zeroCells[this.random.Next(0, zeroCells.Count)];
+            (int Y, int X) randomZeroCell = zeroCells[this.random.Next(0, zeroCells.Count)];
 
             // 10% chance to drop 4 instead of 2
             const double chanceToDrop4 = 0.1;
@@ -236,7 +237,7 @@ namespace Game2048
                 ? 4
                 : 2;
 
-            this.gameCells[randomZeroCell.X, randomZeroCell.Y] = number;
+            this.gameCells[randomZeroCell.Y, randomZeroCell.X] = number;
         }
     }
 }
