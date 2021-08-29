@@ -5,16 +5,16 @@ namespace Game2048
     public class Program
     {
         private static Game2048 game;
-        private static GameState currentGameState;
+        private static PlayerInputControlState currentInputControlState;
 
         public static void Main()
         {
             game = new Game2048();
-            game.Victory += (_, _) => currentGameState = GameState.RestartOrQuit;
-            game.Defeat  += (_, _) => currentGameState = GameState.RestartOrQuit;
+            game.Victory += (_, _) => currentInputControlState = PlayerInputControlState.RestartOrQuit;
+            game.Defeat  += (_, _) => currentInputControlState = PlayerInputControlState.RestartOrQuit;
             game.Restart();
 
-            currentGameState = GameState.GameLoop;
+            currentInputControlState = PlayerInputControlState.GameLoop;
 
             while (true)
             {
@@ -22,18 +22,18 @@ namespace Game2048
 
                 game.DrawToConsole();
 
-                switch (currentGameState)
+                switch (currentInputControlState)
                 {
-                    case GameState.GameLoop:
+                    case PlayerInputControlState.GameLoop:
                         UpdateGameLoop(game);
                         break;
-                    case GameState.RestartConfirmation:
+                    case PlayerInputControlState.RestartConfirmation:
                         WaitingRestartConfirmation(game);
                         break;
-                    case GameState.QuitConfirmation:
+                    case PlayerInputControlState.QuitConfirmation:
                         WaitingQuitConfirmation();
                         break;
-                    case GameState.RestartOrQuit:
+                    case PlayerInputControlState.RestartOrQuit:
                         WaitingRestartOrQuit();
                         break;
                     default:
@@ -59,10 +59,10 @@ namespace Game2048
                     game.MoveRight();
                     break;
                 case ConsoleKey.R:
-                    currentGameState = GameState.RestartConfirmation;
+                    currentInputControlState = PlayerInputControlState.RestartConfirmation;
                     break;
                 case ConsoleKey.Q:
-                    currentGameState = GameState.QuitConfirmation;
+                    currentInputControlState = PlayerInputControlState.QuitConfirmation;
                     break;
             }
         }
@@ -75,10 +75,10 @@ namespace Game2048
             {
                 case ConsoleKey.Y:
                     game.Restart();
-                    currentGameState = GameState.GameLoop;
+                    currentInputControlState = PlayerInputControlState.GameLoop;
                     break;
                 case ConsoleKey.N:
-                    currentGameState = GameState.GameLoop;
+                    currentInputControlState = PlayerInputControlState.GameLoop;
                     break;
             }
         }
@@ -93,7 +93,7 @@ namespace Game2048
                     Environment.Exit(0);
                     break;
                 case ConsoleKey.N:
-                    currentGameState = GameState.GameLoop;
+                    currentInputControlState = PlayerInputControlState.GameLoop;
                     break;
             }
         }
@@ -106,7 +106,7 @@ namespace Game2048
             {
                 case ConsoleKey.R:
                     game.Restart();
-                    currentGameState = GameState.GameLoop;
+                    currentInputControlState = PlayerInputControlState.GameLoop;
                     break;
                 case ConsoleKey.Q:
                     Environment.Exit(0);
