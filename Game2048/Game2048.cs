@@ -96,6 +96,22 @@ namespace Game2048
                 Console.WriteLine($"You lose!");
         }
 
+        public Game2048State GetState()
+        {
+            int[,] cellsCopy = (int[,])this.gameCells.Clone();
+
+            return new Game2048State(cellsCopy, this.score, this.bestScore, this.isVictoryNumberReached, this.noLegalMove);
+        }
+
+        public void LoadState(Game2048State state)
+        {
+            Array.Copy(state.GameCells, this.gameCells, this.gameCells.Length);
+            this.score = state.Score;
+            this.bestScore = state.BestScore;
+            this.isVictoryNumberReached = state.IsVictoryNumberReached;
+            this.noLegalMove = state.NoLegalMove;
+        }
+
         public void MoveUp()    => this.Move(0, -1);
         public void MoveDown()  => this.Move(0,  1);
         public void MoveLeft()  => this.Move(-1, 0);
