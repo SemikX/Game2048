@@ -19,8 +19,7 @@ namespace Game2048
         private int bestScore;
         private int score;
 
-        private bool isVictoryNumberReached;
-        private bool noLegalMove;
+        private GameStatus gameStatus;
 
         private readonly Dictionary<int, ConsoleColor> numberColors = new()
         {
@@ -46,8 +45,7 @@ namespace Game2048
         {
             this.gameCells = new int[Height, Width];
             this.score = 0;
-            this.noLegalMove = false;
-            this.isVictoryNumberReached = false;
+            this.gameStatus = GameStatus.WaitingForMove;
 
             const int startingTwos = 2;
 
@@ -89,18 +87,22 @@ namespace Game2048
             Console.WriteLine($"Score: {this.score}");
             Console.WriteLine($"Best score: {this.bestScore}");
 
-            if (this.isVictoryNumberReached)
-                Console.WriteLine($"You win!");
-
-            if (this.noLegalMove)
-                Console.WriteLine($"You lose!");
+            switch (this.gameStatus)
+            {
+                case GameStatus.Victory:
+                    Console.WriteLine("You win!");
+                    break;
+                case GameStatus.Defeat:
+                    Console.WriteLine("You lose!");
+                    break;
+            }
         }
 
         public Game2048State GetState()
         {
             int[,] cellsCopy = (int[,])this.gameCells.Clone();
 
-            return new Game2048State(cellsCopy, this.score, this.bestScore, this.isVictoryNumberReached, this.noLegalMove);
+            return new Game2048State(cellsCopy, this.score, this.bestScore, this.gameStatus);
         }
 
         public void LoadState(Game2048State state)
@@ -108,8 +110,7 @@ namespace Game2048
             Array.Copy(state.GameCells, this.gameCells, this.gameCells.Length);
             this.score = state.Score;
             this.bestScore = state.BestScore;
-            this.isVictoryNumberReached = state.IsVictoryNumberReached;
-            this.noLegalMove = state.NoLegalMove;
+            this.gameStatus = state.GameStatus;
         }
 
         public void MoveUp()    => this.Move(0, -1);
@@ -171,7 +172,7 @@ namespace Game2048
                                 this.bestScore = this.score;
 
                             if (finalNumber >= VictoryNumber)
-                                this.isVictoryNumberReached = true;
+                                this.gameStatus = GameStatus.Victory;
 
                             isMovementHappened = true;
                         }
@@ -181,7 +182,7 @@ namespace Game2048
                 }
             }
 
-            if (this.isVictoryNumberReached)
+            if (this.gameStatus == GameStatus.Victory)
             {
                 this.Victory(this, EventArgs.Empty);
                 return;
@@ -193,7 +194,7 @@ namespace Game2048
 
                 if (!this.IsLegalMoveAvailable())
                 {
-                    this.noLegalMove = true;
+                    this.gameStatus = GameStatus.Defeat;
                     this.Defeat(this, EventArgs.Empty);
                 }
             }

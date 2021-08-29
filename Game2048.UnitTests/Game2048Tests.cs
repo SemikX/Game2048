@@ -25,7 +25,7 @@ namespace Game2048.UnitTests
                 { 0, 32, 0,   16 },
             };
 
-            var testState = new Game2048State(initialCellsState, 500, 2500, IsVictoryNumberReached: false, NoLegalMove: false);
+            var testState = new Game2048State(initialCellsState, 500, 2500, GameStatus.WaitingForMove);
 
             // Act
             this.game.LoadState(testState);
@@ -36,8 +36,7 @@ namespace Game2048.UnitTests
             Assert.That(testState.GameCells.SequenceEquals(newState.GameCells));
             Assert.That(testState.Score, Is.EqualTo(newState.Score));
             Assert.That(testState.BestScore, Is.EqualTo(newState.BestScore));
-            Assert.That(testState.NoLegalMove, Is.EqualTo(newState.NoLegalMove));
-            Assert.That(testState.IsVictoryNumberReached, Is.EqualTo(newState.IsVictoryNumberReached));
+            Assert.That(testState.GameStatus, Is.EqualTo(newState.GameStatus));
         }
     }
 }
