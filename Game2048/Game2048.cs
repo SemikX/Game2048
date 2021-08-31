@@ -208,8 +208,8 @@ namespace Game2048
 
         private bool IsLegalMoveAvailable()
         {
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
+            for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
                 {
                     int currentCellNumber = this.gameCells[y, x];
                     if (currentCellNumber == 0)
