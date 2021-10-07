@@ -11,7 +11,7 @@ namespace Game2048.UnitTests
         public void Setup()
         {
             this.game = new Game2048();
-            this.game.Restart();
+            this.game.Initialize();
         }
 
         [Test]
@@ -29,7 +29,7 @@ namespace Game2048.UnitTests
             var testState = new Game2048State(initialCellsState, 500, 2500, GameStatus.WaitingForMove);
 
             // Act
-            this.game.LoadState(testState);
+            this.game.ApplyState(testState);
             Game2048State newState = this.game.GetState();
 
             // Assert
@@ -52,7 +52,7 @@ namespace Game2048.UnitTests
                 { 0, 0, 0, 0 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveRight();
@@ -73,7 +73,7 @@ namespace Game2048.UnitTests
                 { 0, 0, 0, 0 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveDown();
@@ -94,7 +94,7 @@ namespace Game2048.UnitTests
                 { 0, 2, 4, 2 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveRight();
@@ -121,7 +121,7 @@ namespace Game2048.UnitTests
                 { 0, 0,  0,  0 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 8, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 8, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveRight();
@@ -145,7 +145,7 @@ namespace Game2048.UnitTests
                 { 0, 0, 1024, 1024 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveLeft();
@@ -166,7 +166,7 @@ namespace Game2048.UnitTests
                 { 1024, 512, 256, 4 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveUp();
@@ -187,7 +187,7 @@ namespace Game2048.UnitTests
                 { 2, 0, 0, 0 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveUp();
@@ -212,7 +212,7 @@ namespace Game2048.UnitTests
                 { 0, 0, 2, 0 },
             };
 
-            this.game.LoadState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
+            this.game.ApplyState(new Game2048State(initialCellsState, 0, 0, GameStatus.WaitingForMove));
 
             // Act
             this.game.MoveDown();

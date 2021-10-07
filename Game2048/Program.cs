@@ -12,7 +12,7 @@ namespace Game2048
             game = new Game2048();
             game.Victory += (_, _) => currentInputControlState = PlayerInputControlState.RestartOrQuit;
             game.Defeat  += (_, _) => currentInputControlState = PlayerInputControlState.RestartOrQuit;
-            game.Restart();
+            game.Initialize();
 
             currentInputControlState = PlayerInputControlState.GameLoop;
 

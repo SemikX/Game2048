@@ -20,9 +20,10 @@ namespace Game2048
 
         private GameStatus gameStatus;
 
-        public Game2048()
+        public void Initialize()
         {
             this.bestScore = 0;
+            this.Restart();
         }
 
         public void Restart()
@@ -44,7 +45,7 @@ namespace Game2048
             return new Game2048State(cellsCopy, this.score, this.bestScore, this.gameStatus);
         }
 
-        public void LoadState(Game2048State state)
+        public void ApplyState(Game2048State state)
         {
             Array.Copy(state.GameCells, this.gameCells, this.gameCells.Length);
             this.score = state.Score;
