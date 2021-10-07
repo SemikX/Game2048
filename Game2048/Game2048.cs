@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Game2048
 {
-    public class Game2048
+    public partial class Game2048
     {
         private const int Width = 4;
         private const int Height = 4;
@@ -21,21 +20,6 @@ namespace Game2048
 
         private GameStatus gameStatus;
 
-        private readonly Dictionary<int, ConsoleColor> numberColors = new()
-        {
-            { 2,    ConsoleColor.White },
-            { 4,    ConsoleColor.DarkGreen },
-            { 8,    ConsoleColor.Green },
-            { 16,   ConsoleColor.Cyan },
-            { 32,   ConsoleColor.DarkCyan },
-            { 64,   ConsoleColor.DarkYellow },
-            { 128,  ConsoleColor.Yellow },
-            { 256,  ConsoleColor.DarkMagenta },
-            { 512,  ConsoleColor.Magenta },
-            { 1024, ConsoleColor.DarkRed },
-            { 2048, ConsoleColor.Red }
-        };
-
         public Game2048()
         {
             this.bestScore = 0;
@@ -51,51 +35,6 @@ namespace Game2048
 
             for (int i = 0; i < startingTwos; i++)
                 this.GenerateNumberInFreeCell();
-        }
-
-        public void DrawToConsole()
-        {
-            string numberLineSeparator = string.Join("----", Enumerable.Repeat("|", Width + 1));
-
-            Console.WriteLine(numberLineSeparator);
-
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    Console.Write("|");
-
-                    int cellNumber = this.gameCells[y, x];
-
-                    string numberString = cellNumber != 0
-                        ? cellNumber.ToString()
-                        : "";
-
-                    Console.ForegroundColor = this.numberColors.TryGetValue(cellNumber, out ConsoleColor numberColor)
-                        ? numberColor
-                        : ConsoleColor.Red;
-
-                    Console.Write(numberString.PadLeft(4));
-                    Console.ResetColor();
-                }
-
-                Console.WriteLine("|");
-                Console.WriteLine(numberLineSeparator);
-            }
-
-            Console.WriteLine();
-            Console.WriteLine($"Score: {this.score}");
-            Console.WriteLine($"Best score: {this.bestScore}");
-
-            switch (this.gameStatus)
-            {
-                case GameStatus.Victory:
-                    Console.WriteLine("You win!");
-                    break;
-                case GameStatus.Defeat:
-                    Console.WriteLine("You lose!");
-                    break;
-            }
         }
 
         public Game2048State GetState()
