@@ -6,9 +6,9 @@ namespace Game2048
 {
     public partial class Game2048
     {
-        private string numberLineSeparator = string.Join("----", Enumerable.Repeat("|", Width + 1));
+        private static readonly string NumberLineSeparator = string.Join("----", Enumerable.Repeat("|", Width + 1));
 
-        private readonly Dictionary<int, ConsoleColor> numberColors = new()
+        private static readonly Dictionary<int, ConsoleColor> NumberColors = new()
         {
             { 2, ConsoleColor.White },
             { 4, ConsoleColor.DarkGreen },
@@ -25,7 +25,7 @@ namespace Game2048
 
         public void DrawToConsole()
         {
-            Console.WriteLine(this.numberLineSeparator);
+            Console.WriteLine(NumberLineSeparator);
 
             for (int y = 0; y < Height; y++)
             {
@@ -39,7 +39,7 @@ namespace Game2048
                         ? cellNumber.ToString()
                         : "";
 
-                    Console.ForegroundColor = this.numberColors.TryGetValue(cellNumber, out ConsoleColor numberColor)
+                    Console.ForegroundColor = NumberColors.TryGetValue(cellNumber, out ConsoleColor numberColor)
                         ? numberColor
                         : ConsoleColor.Red;
 
@@ -48,7 +48,7 @@ namespace Game2048
                 }
 
                 Console.WriteLine("|");
-                Console.WriteLine(this.numberLineSeparator);
+                Console.WriteLine(NumberLineSeparator);
             }
 
             Console.WriteLine();

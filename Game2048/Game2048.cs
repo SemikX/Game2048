@@ -8,7 +8,7 @@ namespace Game2048
         private const int Width = 4;
         private const int Height = 4;
         private const int VictoryNumber = 2048;
-        private readonly Random random = new Random();
+        private static readonly Random Random = new Random();
 
         public event EventHandler Victory = delegate { };
         public event EventHandler Defeat  = delegate { };
@@ -60,6 +60,9 @@ namespace Game2048
 
         private void Move(int offsetX, int offsetY)
         {
+            if (this.gameStatus != GameStatus.WaitingForMove)
+                return;
+
             bool isMovementHappened = false;
 
             var cellProcessingOrderXs = offsetX < 1
@@ -180,7 +183,7 @@ namespace Game2048
                 // 10% chance to drop 4 instead of 2
                 const double chanceToDrop4 = 0.1;
 
-                int number = this.random.NextDouble() < chanceToDrop4
+                int number = Random.NextDouble() < chanceToDrop4
                     ? 4
                     : 2;
 
@@ -190,8 +193,8 @@ namespace Game2048
 
         private bool TryFindFreeCell(out int freeCellX, out int freeCellY)
         {
-            int yRnd = this.random.Next(0, Height);
-            int xRnd = this.random.Next(0, Width);
+            int yRnd = Random.Next(0, Height);
+            int xRnd = Random.Next(0, Width);
 
             for (int y = 0; y < Height; ++y)
             {
