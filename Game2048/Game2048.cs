@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Game2048
@@ -63,7 +64,35 @@ namespace Game2048
             if (this.gameStatus != GameStatus.WaitingForMove)
                 return;
 
+            bool isMovementHappened = this.TryPushNumbersInCells(offsetX, offsetY, out IList<int> numbersInMergedCells);
+
+            if (!isMovementHappened)
+                return;
+
+            this.score += numbersInMergedCells.Sum();
+            this.bestScore = Math.Max(this.bestScore, this.score);
+
+            if (numbersInMergedCells.Contains(VictoryNumber))
+            {
+                this.gameStatus = GameStatus.Victory;
+                this.Victory(this, EventArgs.Empty);
+                return;
+            }
+
+            this.GenerateNumberInFreeCell();
+
+            if (!this.IsLegalMoveAvailable())
+            {
+                this.gameStatus = GameStatus.Defeat;
+                this.Defeat(this, EventArgs.Empty);
+            }
+        }
+
+        // Returns true if at least one number has moved
+        private bool TryPushNumbersInCells(int offsetX, int offsetY, out IList<int> numbersInMergedCells)
+        {
             bool isMovementHappened = false;
+            numbersInMergedCells = new List<int>();
 
             var cellProcessingOrderXs = offsetX < 1
                 ? Enumerable.Range(0, Width)
@@ -106,17 +135,10 @@ namespace Game2048
                         if (accumulatorCellNumber == movingCellNumber)
                         {
                             int finalNumber = accumulatorCellNumber + movingCellNumber;
-
                             this.gameCells[accumulatorCellY, accumulatorCellX] = finalNumber;
                             this.gameCells[movingCellY, movingCellX] = 0;
 
-                            this.score += finalNumber;
-                            if (this.score > this.bestScore)
-                                this.bestScore = this.score;
-
-                            if (finalNumber >= VictoryNumber)
-                                this.gameStatus = GameStatus.Victory;
-
+                            numbersInMergedCells.Add(finalNumber);
                             isMovementHappened = true;
                         }
 
@@ -125,22 +147,7 @@ namespace Game2048
                 }
             }
 
-            if (this.gameStatus == GameStatus.Victory)
-            {
-                this.Victory(this, EventArgs.Empty);
-                return;
-            }
-
-            if (isMovementHappened)
-            {
-                this.GenerateNumberInFreeCell();
-
-                if (!this.IsLegalMoveAvailable())
-                {
-                    this.gameStatus = GameStatus.Defeat;
-                    this.Defeat(this, EventArgs.Empty);
-                }
-            }
+            return isMovementHappened;
         }
 
         private bool IsCellOutOfBounds(int x, int y)
